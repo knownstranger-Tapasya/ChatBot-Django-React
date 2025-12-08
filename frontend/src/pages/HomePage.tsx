@@ -95,9 +95,7 @@ export default function Homepage() {
     }
   }, [location.pathname]);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  // Removed auto-scroll to bottom on message change
 
   const handleSend = () => {
     if (!input.trim()) return;
