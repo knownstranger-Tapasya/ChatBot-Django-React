@@ -7,6 +7,7 @@ import vs2015 from "react-syntax-highlighter/dist/esm/styles/prism/atom-dark";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import TypingLoader from "@/components/TypingLoader";
+import LoginPrompt from "@/components/LoginPrompt";
 import { promptGPT } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
@@ -126,6 +127,11 @@ export default function Homepage() {
       setTimeout(() => setCopiedIndex(null), 2000);
     });
   };
+
+  // Show login prompt if user is not authenticated
+  if (!user) {
+    return <LoginPrompt />;
+  }
 
   return (
     <div className="flex flex-1 flex-col min-h-screen">
