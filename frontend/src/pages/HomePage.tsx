@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { SendHorizonalIcon } from "lucide-react";
+import { SendHorizonalIcon, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -7,6 +7,7 @@ import vs2015 from "react-syntax-highlighter/dist/esm/styles/prism/atom-dark";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import TypingLoader from "@/components/TypingLoader";
+import LoginPrompt from "@/components/LoginPrompt";
 import { promptGPT } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { Link } from "react-router-dom";
@@ -18,6 +19,7 @@ export default function Homepage() {
   const { user, storeUserSearch } = useAuth();
   const [input, setInput] = useState("");
   const [chatID, setChatID] = useState("");
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [messages, setMessages] = useState<
     { role: "user" | "assistant"; content: string }[]
   >([{ role: "assistant", content: "Welcome! I'm here to assist you." }]);
@@ -119,6 +121,18 @@ export default function Homepage() {
     }
   };
 
+  const handleCopyMessage = (content: string, index: number) => {
+    navigator.clipboard.writeText(content).then(() => {
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    });
+  };
+
+  // Show login prompt if user is not authenticated
+  if (!user) {
+    return <LoginPrompt />;
+  }
+
   return (
     <div className="flex flex-1 flex-col min-h-screen">
       <div className="flex flex-col flex-1 bg-background text-foreground">
@@ -135,11 +149,11 @@ export default function Homepage() {
             ) : (
               <div
                 key={idx}
-                className="prose dark:prose-invert max-w-none bg-muted text-foreground p-4 rounded-lg shadow mb-4"
+                className="prose dark:prose-invert max-w-none bg-muted text-foreground p-4 rounded-lg shadow mb-4 relative group"
               >
                 <ReactMarkdown
                   components={{
-                    code({ inline, className, children }) {
+                    code({ inline, className, children }: any) {
                       const match = /language-(\w+)/.exec(className || "");
                       return !inline && match ? (
                         <SyntaxHighlighter
@@ -160,6 +174,17 @@ export default function Homepage() {
                 >
                   {msg.content}
                 </ReactMarkdown>
+                <button
+                  onClick={() => handleCopyMessage(msg.content, idx)}
+                  className="absolute top-2 right-2 p-2 rounded-md bg-muted hover:bg-muted/80 opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Copy message to clipboard"
+                >
+                  {copiedIndex === idx ? (
+                    <Check size={18} className="text-green-500" />
+                  ) : (
+                    <Copy size={18} className="text-foreground" />
+                  )}
+                </button>
               </div>
             )
           )}

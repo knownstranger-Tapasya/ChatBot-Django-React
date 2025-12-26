@@ -1,5 +1,5 @@
 // File: pages/AboutMePage.tsx
-import { Github, Linkedin, User, Code2, Zap } from "lucide-react";
+import { Github, Linkedin, User, Code2, Zap, Briefcase } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 
@@ -124,6 +124,15 @@ export const AboutMePage = () => {
           >
             <Linkedin className="w-6 h-6" />
             LinkedIn
+          </a>
+          <a
+            href="https://sujaykumarmondal.github.io/portfolio/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors text-lg font-medium"
+          >
+            <Briefcase className="w-6 h-6" />
+            Portfolio
           </a>
         </div>
       </motion.div>
