@@ -25,7 +25,7 @@ export default function Homepage() {
   >([{ role: "assistant", content: "Welcome! I'm here to assist you." }]);
 
   // Get JWT token from localStorage
-  const token = localStorage.getItem("access_token") || "";
+  const getToken = () => localStorage.getItem("access_token") || "";
 
   useEffect(() => {
     setChatID(chat_uid ? chat_uid : crypto.randomUUID());
@@ -40,7 +40,7 @@ export default function Homepage() {
   // 🔹 Send message
   const mutation = useMutation({
     mutationFn: ({ chat_id, content }: { chat_id: string; content: string }) =>
-      promptGPT({ chat_id, content }, token),
+      promptGPT({ chat_id, content }, getToken()),
     onSuccess: (res) => {
       console.log("Groq Response:", res);
       if (res?.reply) {
@@ -67,7 +67,7 @@ export default function Homepage() {
     queryFn: async () => {
       const res = await fetch(`http://127.0.0.1:7004/chats/${chatID}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
       if (!res.ok) return []; // prevent blank screen

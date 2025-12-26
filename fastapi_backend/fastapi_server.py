@@ -1,0 +1,56 @@
+import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+from db import init_db
+from routes import router
+
+# Load environment variables
+load_dotenv()
+
+# Initialize database
+init_db()
+
+# Create FastAPI app
+app = FastAPI(title="ChatPaat API", version="1.0.0")
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for development
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include routes
+app.include_router(router)
+
+
+@app.get("/")
+def read_root():
+    """Root endpoint"""
+    return {"message": "Welcome to ChatPaat API"}
+
+
+@app.get("/health/")
+def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    
+    # Always run on localhost:7004
+    HOST = "127.0.0.1"
+    PORT = 7004
+    
+    uvicorn.run(
+        "fastapi_server:app",
+        host=HOST,
+        port=PORT,
+        reload=True,
+        log_level="info"
+    )
