@@ -18,12 +18,14 @@ interface AuthContextType {
   signOut: () => void;
   register: (username: string, email: string, password: string) => Promise<void>;
   storeUserSearch: (searchQuery: string) => Promise<void>;
+  refreshTrigger: number; // Trigger for external components to refetch on auth change
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Restore user on refresh
   useEffect(() => {
@@ -59,6 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     setUser(userProfile);
     localStorage.setItem("user", JSON.stringify(userProfile));
+    setRefreshTrigger(prev => prev + 1); // Trigger refetch in sidebar
   } catch (err: any) {
     throw new Error(err.message || "Login failed");
   }
@@ -94,6 +97,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       setUser(userProfile);
       localStorage.setItem("user", JSON.stringify(userProfile));
+      setRefreshTrigger(prev => prev + 1); // Trigger refetch in sidebar
     } catch (err: any) {
       throw new Error(err.message || "Registration failed");
     }
@@ -132,7 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, register, storeUserSearch }}>
+    <AuthContext.Provider value={{ user, signIn, signOut, register, storeUserSearch, refreshTrigger }}>
       {children}
     </AuthContext.Provider>
   );

@@ -47,7 +47,7 @@ export function AppSidebar() {
   const [recentChats, setRecentChats] = useState<IChat[]>([]);
   const [yesterdaysChats, setYesterdaysChat] = useState<IChat[]>([]);
   const [sevenDaysChats, setSevenDaysChat] = useState<IChat[]>([]);
-  const { user, signOut } = useAuth();
+  const { user, signOut, refreshTrigger } = useAuth();
   const token = localStorage.getItem("access_token") || "";
 
   // ⏰ IST Clock
@@ -69,29 +69,39 @@ export function AppSidebar() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    async function fetchChats() {
-      if (!token) {
-        setRecentChats([]);
-        setYesterdaysChat([]);
-        setSevenDaysChat([]);
-        return;
-      }
-      try {
-        const today = await getTodaysChats(token);
-        setRecentChats(today || []);
-        const yesterday = await getYesterdaysChats(token);
-        setYesterdaysChat(yesterday || []);
-        const seven = await getSevenDaysChats(token);
-        setSevenDaysChat(seven || []);
-      } catch {
-        setRecentChats([]);
-        setYesterdaysChat([]);
-        setSevenDaysChat([]);
-      }
+  const fetchChatsData = async () => {
+    if (!token) {
+      setRecentChats([]);
+      setYesterdaysChat([]);
+      setSevenDaysChat([]);
+      return;
     }
-    fetchChats();
-  }, [token, user]);
+    try {
+      const today = await getTodaysChats(token);
+      setRecentChats(today || []);
+      const yesterday = await getYesterdaysChats(token);
+      setYesterdaysChat(yesterday || []);
+      const seven = await getSevenDaysChats(token);
+      setSevenDaysChat(seven || []);
+    } catch {
+      setRecentChats([]);
+      setYesterdaysChat([]);
+      setSevenDaysChat([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchChatsData();
+  }, [token, user, refreshTrigger]);
+
+  // Refetch chats when window regains focus
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchChatsData();
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [token]);
 
   // Clear chats on logout
   const handleLogout = () => {
