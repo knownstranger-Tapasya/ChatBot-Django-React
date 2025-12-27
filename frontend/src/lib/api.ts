@@ -90,3 +90,17 @@ export async function getSevenDaysChats(token: string) {
     handleError(err);
   }
 }
+
+// 🔹 Delete chat
+export async function deleteChat(chatId: string, token: string) {
+  try {
+    const response = await api.delete(`/delete_chat/${chatId}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err: unknown) {
+    handleError(err);
+  }
+}

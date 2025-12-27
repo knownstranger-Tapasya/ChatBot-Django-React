@@ -74,6 +74,8 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+  --accent-custom: oklch(0.6 0.2 260);
+  --high-contrast: 0;
 }
 
 .dark {
@@ -117,4 +119,226 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.3s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animate-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    var(--background),
+    var(--muted),
+    var(--background)
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Responsive Styles */
+@media (max-width: 640px) {
+  .hidden-mobile {
+    display: none;
+  }
+
+  .text-mobile-sm {
+    @apply text-xs;
+  }
+
+  .px-mobile {
+    @apply px-2;
+  }
+
+  .py-mobile {
+    @apply py-2;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --primary: oklch(0.1 0 0);
+  --foreground: oklch(0.95 0 0);
+  --border: oklch(0.1 0 0);
+}
+
+/* Font Size Variants */
+html[data-font-size="small"] {
+  font-size: 14px;
+}
+
+html[data-font-size="base"] {
+  font-size: 16px;
+}
+
+html[data-font-size="large"] {
+  font-size: 18px;
+}
+
+html[data-font-size="xl"] {
+  font-size: 20px;
+}
+
+/* Message Density */
+html[data-message-density="compact"] .message {
+  @apply p-2;
+}
+
+html[data-message-density="comfortable"] .message {
+  @apply p-4;
+}
+
+html[data-message-density="spacious"] .message {
+  @apply p-6;
+}
+
+/* High Contrast Mode */
+html[data-high-contrast="true"] {
+  --foreground: oklch(0 0 0);
+  --background: oklch(1 0 0);
+  --primary: oklch(0 0 0);
+  --border: oklch(0 0 0);
+  --muted-foreground: oklch(0.3 0 0);
+}
+
+html[data-high-contrast="true"].dark {
+  --foreground: oklch(1 0 0);
+  --background: oklch(0 0 0);
+  --primary: oklch(1 0 0);
+  --border: oklch(1 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+}
+
+/* Warm Palette Mode */
+html[data-warm-palette="true"] {
+  --primary: oklch(0.65 0.25 50);
+  --secondary: oklch(0.6 0.2 35);
+  --accent: oklch(0.75 0.25 40);
+}
+
+html[data-warm-palette="true"].dark {
+  --primary: oklch(0.72 0.22 35);
+  --secondary: oklch(0.65 0.18 50);
+  --accent: oklch(0.78 0.25 45);
+}
+
+/* Smooth Transitions */
+button,
+a,
+input {
+  @apply transition-all duration-200;
+}
+
+/* Better Focus States */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-primary;
+}
+
+/* Loading Skeleton */
+.skeleton {
+  @apply animate-shimmer;
 }

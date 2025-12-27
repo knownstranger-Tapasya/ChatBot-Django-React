@@ -447,6 +447,47 @@ def seven_days_chat(
     ]
 
 
+@router.delete("/delete_chat/{chat_id}/")
+def delete_chat(
+    chat_id: str,
+    authorization: str = Header(None),
+    db: Session = Depends(get_db)
+):
+    """
+    Delete a chat and all its associated messages
+    """
+    # Get current user
+    user = get_current_user(authorization, db)
+    
+    # Find the chat
+    chat = db.query(Chat).filter(
+        Chat.id == chat_id,
+        Chat.user_id == user.id
+    ).first()
+    
+    if not chat:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Chat not found"
+        )
+    
+    try:
+        # Delete all messages in the chat (cascade will handle this)
+        db.delete(chat)
+        db.commit()
+        
+        return {
+            "message": "Chat deleted successfully",
+            "chat_id": chat_id
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error deleting chat: {str(e)}"
+        )
+
+
 @router.post("/api/store_search/")
 def user_search(
     search_data: SearchQueryRequest,
