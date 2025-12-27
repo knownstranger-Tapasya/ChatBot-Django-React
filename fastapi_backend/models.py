@@ -56,7 +56,7 @@ class RoleEnum(str, enum.Enum):
 class ChatMessage(Base):
     __tablename__ = "chatpaat_app_chatmessage"
     
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(Integer, primary_key=True, autoincrement=True)
     chat_id = Column(String(36), ForeignKey("chatpaat_app_chat.id"), nullable=False, index=True)
     role = Column(String(15), nullable=False)
     content = Column(Text, nullable=False)
@@ -72,7 +72,7 @@ class ChatMessage(Base):
 class UserSearchHistory(Base):
     __tablename__ = "chatpaat_app_usersearchhistory"
     
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("chatpaat_app_customuser.id"), nullable=False, index=True)
     search_query = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)

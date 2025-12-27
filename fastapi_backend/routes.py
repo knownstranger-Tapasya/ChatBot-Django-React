@@ -2,7 +2,7 @@ import os
 import uuid
 from datetime import datetime, timedelta
 import requests
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional
@@ -65,10 +65,16 @@ class SearchQueryRequest(BaseModel):
 
 def get_current_user(token: str, db: Session) -> CustomUser:
     """Get current user from JWT token"""
-    if not token or not token.startswith("Bearer "):
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authorization header"
+            detail="Missing authorization header"
+        )
+    
+    if not token.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authorization header format"
         )
     
     token = token.replace("Bearer ", "")
@@ -208,7 +214,7 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
 @router.post("/prompt_gpt/")
 def prompt_gpt(
     prompt_data: PromptRequest,
-    authorization: str = None,
+    authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
     """
@@ -255,7 +261,6 @@ def prompt_gpt(
     
     # Save user message
     user_message = ChatMessage(
-        id=str(uuid.uuid4()),
         chat_id=chat.id,
         role="user",
         content=prompt_data.content,
@@ -299,7 +304,6 @@ def prompt_gpt(
     
     # Save assistant response
     assistant_message = ChatMessage(
-        id=str(uuid.uuid4()),
         chat_id=chat.id,
         role="assistant",
         content=groq_reply,
@@ -314,7 +318,7 @@ def prompt_gpt(
 @router.get("/get_chat_messages/{chat_id}/")
 def get_chat_messages(
     chat_id: str,
-    authorization: str = None,
+    authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
     """
@@ -354,7 +358,7 @@ def get_chat_messages(
 
 @router.get("/todays_chat/")
 def todays_chat(
-    authorization: str = None,
+    authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
     """
@@ -382,7 +386,7 @@ def todays_chat(
 
 @router.get("/yesterdays_chat/")
 def yesterdays_chat(
-    authorization: str = None,
+    authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
     """
@@ -413,7 +417,7 @@ def yesterdays_chat(
 
 @router.get("/seven_days_chat/")
 def seven_days_chat(
-    authorization: str = None,
+    authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
     """
@@ -446,7 +450,7 @@ def seven_days_chat(
 @router.post("/api/store_search/")
 def user_search(
     search_data: SearchQueryRequest,
-    authorization: str = None,
+    authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
     """
@@ -463,7 +467,6 @@ def user_search(
     
     # Store search query
     search_history = UserSearchHistory(
-        id=str(uuid.uuid4()),
         user_id=user.id,
         search_query=search_data.search_query,
         created_at=datetime.utcnow()

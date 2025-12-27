@@ -65,7 +65,7 @@ export default function Homepage() {
   const { data: chatData } = useQuery({
     queryKey: ["chatMessages", chatID],
     queryFn: async () => {
-      const res = await fetch(`http://127.0.0.1:7004/chats/${chatID}`, {
+      const res = await fetch(`http://127.0.0.1:7004/get_chat_messages/${chatID}/`, {
         headers: {
           Authorization: `Bearer ${getToken()}`,
         },
