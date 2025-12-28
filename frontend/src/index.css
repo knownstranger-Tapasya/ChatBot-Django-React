@@ -39,6 +39,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --animate-shimmer: shimmer 2s infinite;
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
 }
 
 :root {
@@ -166,15 +176,6 @@
   }
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
 @keyframes pulse-soft {
   0%, 100% {
     opacity: 1;
@@ -207,17 +208,6 @@
 
 .animate-scaleIn {
   animation: scaleIn 0.3s ease-out;
-}
-
-.animate-shimmer {
-  background-image: linear-gradient(
-    90deg,
-    var(--background),
-    var(--muted),
-    var(--background)
-  );
-  background-size: 1000px 100%;
-  animation: shimmer 2s infinite;
 }
 
 .animate-pulse-soft {
@@ -340,5 +330,12 @@ input {
 
 /* Loading Skeleton */
 .skeleton {
+  background-image: linear-gradient(
+    90deg,
+    var(--background),
+    var(--muted),
+    var(--background)
+  );
+  background-size: 1000px 100%;
   @apply animate-shimmer;
 }
