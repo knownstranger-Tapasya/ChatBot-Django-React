@@ -3,6 +3,8 @@ import MainLayout from "./components/MainLayout";
 import HomePage from "./pages/HomePage";
 import SignInPage from "./pages/SignIn";
 import OAuthCallback from "./pages/OAuthCallback";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import { AboutPage } from "./pages/AboutPage";
 import { AboutMePage } from "./pages/AboutMePage";
 import RegisterPage from "./pages/RegisterPage";
@@ -24,6 +26,8 @@ const App = () => {
               {/* Auth routes */}
               <Route path="/signin" element={<SignInPage />} />
               <Route path="/oauth-callback" element={<OAuthCallback />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/about-me" element={<AboutMePage />} />

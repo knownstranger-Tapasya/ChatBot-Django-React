@@ -1,7 +1,10 @@
-"""
-ChatPaat FastAPI Backend
-A modern FastAPI implementation for ChatPaat
-"""
+import sys, os
+from dotenv import load_dotenv
 
-__version__ = "1.0.0"
-__author__ = "ChatPaat Team"
+load_dotenv()
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from db import init_db
+
+if __name__ == "__main__":
+    init_db()
+    print("DB initialized")

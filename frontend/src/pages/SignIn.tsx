@@ -52,6 +52,10 @@ export default function SignInPage() {
           onChange={handleChange}
           required
         />
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-muted"> </span>
+          <button type="button" className="text-sm text-primary" onClick={() => navigate('/forgot-password')}>Forgot password?</button>
+        </div>
 
         <Button type="submit" className="w-full">Sign In</Button>
 

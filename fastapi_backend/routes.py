@@ -5,6 +5,9 @@ import requests
 from fastapi import APIRouter, Depends, HTTPException, status, Header
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+import secrets
+import hashlib
+from datetime import timedelta
 from typing import Optional
 
 from db import get_db
@@ -13,6 +16,9 @@ from auth import (
     hash_password, verify_password, create_access_token, 
     create_refresh_token, verify_token
 )
+from email_utils import send_email
+from models import PasswordResetToken
+from auth import SECRET_KEY
 
 # Google OAuth settings
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")

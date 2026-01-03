@@ -82,3 +82,20 @@ class UserSearchHistory(Base):
     
     def __str__(self):
         return f"{self.user.username}: {self.search_query[:50]}"
+
+
+class PasswordResetToken(Base):
+    __tablename__ = "chatpaat_app_passwordresettoken"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("chatpaat_app_customuser.id"), nullable=False, index=True)
+    token_hash = Column(String(128), nullable=False, index=True)
+    used = Column(Boolean, default=False)
+    expires_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationship
+    user = relationship("CustomUser")
+
+    def __str__(self):
+        return f"PasswordResetToken(user_id={self.user_id}, used={self.used})"
